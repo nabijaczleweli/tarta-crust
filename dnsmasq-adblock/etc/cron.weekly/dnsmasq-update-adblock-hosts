@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /var/lib/dnsmasq/adblock
+./generate
+systemctl reload dnsmasq

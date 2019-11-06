@@ -1,0 +1,8 @@
+#!/bin/bash
+
+rm -rf hosts.old
+mv hosts hosts.old 2>&1 || :
+mkdir hosts
+
+cd hosts
+awk -f ../process_hostslists.awk ../hostslists.url
