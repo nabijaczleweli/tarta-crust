@@ -10,7 +10,7 @@ Downloads and sanitises ad-blocking hosts,
 	a config for dnsmasq and a weekly cronjob by default.
 
 ## rrd_graph
-Generates rrd graphs, in a vaguely modelled after OMV's.
+Generates rrd graphs, vaguely modelled after OMV's.
 
 See `rrd_graph_config.sh` for configuration – default
 	rrd database location is `/var/lib/rrdcached/db/$(hostname)`,
@@ -21,3 +21,7 @@ See `rrd_graph_config.sh` for configuration – default
 ![Load 8-hour average](https://user-images.githubusercontent.com/6709544/69074021-db2aa580-0a2e-11ea-87e0-82d885010275.png)
 ![1-hour network traffic](https://user-images.githubusercontent.com/6709544/69074081-fac1ce00-0a2e-11ea-8b12-1f1cc1578f20.png)
 ![CPU 0 one-day usage](https://user-images.githubusercontent.com/6709544/69074713-36a96300-0a30-11ea-8dd7-73bc322d24eb.png)
+
+## ksmctl
+
+A Rust reimplementation of https://github.com/osuosl/fedpkg-qemu/blob/603dd6670b5fbb851ceac54b4bc9a10ec82a9c9d/ksmctl.c with systemd config from https://packages.debian.org/buster/ksmtuned

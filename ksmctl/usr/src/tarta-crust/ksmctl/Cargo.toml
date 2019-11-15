@@ -1,0 +1,16 @@
+[package]
+name = "tarta-crust-ksmctl"
+description = "Start/stop KSM, for systemd. Based on https://github.com/osuosl/fedpkg-qemu/blob/603dd6670b5fbb851ceac54b4bc9a10ec82a9c9d/ksmctl.c"
+repository = "https://github.com/nabijaczleweli/tarta-crust"
+license = "MIT"
+version = "0.1.0"
+authors = ["nabijaczleweli <nabijaczleweli@gmail.com>"]
+
+
+[dependencies]
+libc = "0.2"
+
+
+[[bin]]
+name = "ksmctl"
+path = "main.rs"
