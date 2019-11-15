@@ -2,3 +2,6 @@
 # which may be allocated by ksm (0 for unlimited)
 # If unset, defaults to half of total memory
 # KSM_MAX_KERNEL_PAGES=
+
+# The time between each sweep, or leave default if unset
+# KSM_SLEEP_MILLISECS=

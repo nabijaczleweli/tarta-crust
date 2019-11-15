@@ -24,4 +24,7 @@ See `rrd_graph_config.sh` for configuration – default
 
 ## ksmctl
 
-A Rust reimplementation of https://github.com/osuosl/fedpkg-qemu/blob/603dd6670b5fbb851ceac54b4bc9a10ec82a9c9d/ksmctl.c with systemd config from https://packages.debian.org/buster/ksmtuned
+A Rust reimplementation of https://github.com/osuosl/fedpkg-qemu/blob/603dd6670b5fbb851ceac54b4bc9a10ec82a9c9d/ksmctl.c with systemd config from https://packages.debian.org/buster/ksmtuned.
+
+Additional features:
+  * `KSM_SLEEP_MILLISECS` in `/etc/default/kvm` => `/sys/kernel/mm/ksm/sleep_millisecs`

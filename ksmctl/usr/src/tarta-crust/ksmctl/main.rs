@@ -8,16 +8,25 @@ use std::io::Write;
 use std::fs::File;
 
 
-static KSM_MAX_KERNEL_PAGES_FILE_B: &[u8] = b"/sys/kernel/mm/ksm/max_kernel_pages\0";
+macro_rules! file_paths {
+    ($path:literal, $file:ident, $file_c:ident) => {
+        #[inline(always)]
+        fn $file() -> &'static str {
+            $path
+        }
+
+        #[inline(always)]
+        fn $file_c() -> &'static CStr {
+            unsafe { CStr::from_bytes_with_nul_unchecked(concat!($path, '\0').as_bytes()) }
+        }
+    }
+}
+
+
 static KSM_RUN_FILE: &str = "/sys/kernel/mm/ksm/run";
 
-fn ksm_max_kernel_pages_file() -> &'static str {
-    unsafe { str::from_utf8_unchecked(&KSM_MAX_KERNEL_PAGES_FILE_B[..KSM_MAX_KERNEL_PAGES_FILE_B.len() - 1]) }
-}
-
-fn ksm_max_kernel_pages_file_c() -> &'static CStr {
-    unsafe { CStr::from_bytes_with_nul_unchecked(KSM_MAX_KERNEL_PAGES_FILE_B) }
-}
+file_paths!("/sys/kernel/mm/ksm/max_kernel_pages", ksm_max_kernel_pages_file, ksm_max_kernel_pages_file_c);
+file_paths!("/sys/kernel/mm/ksm/sleep_millisecs", ksm_sleep_millisecs_file, ksm_sleep_millisecs_file_c);
 
 
 fn write_value(value: u64, filename: &str) -> i32 {
@@ -31,9 +40,19 @@ fn ksm_max_kernel_pages() -> u64 {
     })
 }
 
+fn ksm_sleep_millisecs() -> Option<u64> {
+    env::var("KSM_SLEEP_MILLISECS").ok().and_then(|var| var.parse::<c_longlong>().map(|value| value as u64).ok())
+}
+
 fn start() -> i32 {
     if unsafe { access(ksm_max_kernel_pages_file_c().as_ptr(), R_OK) } >= 0 {
         write_value(ksm_max_kernel_pages(), ksm_max_kernel_pages_file());
+    }
+
+    if let Some(ksm_sleep_millisecs) = ksm_sleep_millisecs() {
+        if unsafe { access(ksm_sleep_millisecs_file_c().as_ptr(), R_OK) } >= 0 {
+            write_value(ksm_sleep_millisecs, ksm_sleep_millisecs_file());
+        }
     }
 
     write_value(1, KSM_RUN_FILE)
