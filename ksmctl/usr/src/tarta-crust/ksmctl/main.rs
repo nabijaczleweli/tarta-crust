@@ -30,7 +30,7 @@ file_paths!("/sys/kernel/mm/ksm/sleep_millisecs", ksm_sleep_millisecs_file, ksm_
 
 
 fn write_value(value: u64, filename: &str) -> i32 {
-    File::create(filename).and_then(|mut f| writeln!(f, "{}", value).map(|_| f)).and_then(|f| f.sync_all()).is_err() as i32
+    File::create(filename).and_then(|mut f| write!(f, "{}", value).map(|_| f)).and_then(|f| f.sync_all()).is_err() as i32
 }
 
 fn ksm_max_kernel_pages() -> u64 {
