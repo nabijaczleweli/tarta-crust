@@ -9,12 +9,8 @@ function generate_interface_graph {
 	start="$2"
 	interface="$3"
 
-	generate_graph                                                        \
-		"$image_dir/cpu-$interface-$period.png"                               \
-		--start "$start"                                                      \
-		--title "\"$interface traffic - by $period\""                         \
-		--slope-mode                                                          \
-		--lower-limit 0                                                       \
+	generate_graph "interface-$interface-$period" "$start"                  \
+		--title "$interface traffic - by $period"                             \
 		--vertical-label "Bits/s"                                             \
 		"DEF:oavgraw=$data_dir/interface-$interface/if_octets.rrd:tx:AVERAGE" \
 		"DEF:ominraw=$data_dir/interface-$interface/if_octets.rrd:tx:MIN"     \
@@ -33,21 +29,20 @@ function generate_interface_graph {
 		"CDEF:tavg=oavg,iavg,+"                                               \
 		"CDEF:tmin=omin,imin,+"                                               \
 		"CDEF:tmax=omax,imax,+"                                               \
-		"LINE1:oavg$color_interface_outgoing:\"Outgoing\""                    \
-		"GPRINT:oavg:AVERAGE:\"%5.1lf%s Avg\""                                \
-		"GPRINT:omax:MAX:\"%5.1lf%s Max\""                                    \
-		"GPRINT:oavg:LAST:\"%5.1lf%s Last\""                                  \
-		"GPRINT:otot:\"%5.1lf%s Total\l\""                                    \
-		"LINE1:iavg$color_interface_incoming:\"Incoming\""                    \
-		"GPRINT:iavg:AVERAGE:\"%5.1lf%s Avg\""                                \
-		"GPRINT:imax:MAX:\"%5.1lf%s Max\""                                    \
-		"GPRINT:iavg:LAST:\"%5.1lf%s Last\""                                  \
-		"GPRINT:itot:\"%5.1lf%s Total\l\""                                    \
-		"COMMENT:\"  Total   \""                                              \
-		"GPRINT:tavg:AVERAGE:\"%5.1lf%s Avg\""                                \
-		"GPRINT:tmax:MAX:\"%5.1lf%s Max\""                                    \
-		"GPRINT:tavg:LAST:\"%5.1lf%s Last\l\""                                \
-		"COMMENT:\"$last_update\""
+		"LINE1:oavg$color_interface_outgoing:Outgoing"                        \
+		"GPRINT:oavg:AVERAGE:%5.1lf%s Avg"                                    \
+		"GPRINT:omax:MAX:%5.1lf%s Max"                                        \
+		"GPRINT:oavg:LAST:%5.1lf%s Last"                                      \
+		"GPRINT:otot:%5.1lf%s Total\\l"                                       \
+		"LINE1:iavg$color_interface_incoming:Incoming"                        \
+		"GPRINT:iavg:AVERAGE:%5.1lf%s Avg"                                    \
+		"GPRINT:imax:MAX:%5.1lf%s Max"                                        \
+		"GPRINT:iavg:LAST:%5.1lf%s Last"                                      \
+		"GPRINT:itot:%5.1lf%s Total\l"                                        \
+		"COMMENT:  Total   "                                                  \
+		"GPRINT:tavg:AVERAGE:%5.1lf%s Avg"                                    \
+		"GPRINT:tmax:MAX:%5.1lf%s Max"                                        \
+		"GPRINT:tavg:LAST:%5.1lf%s Last\\l"
 }
 
 

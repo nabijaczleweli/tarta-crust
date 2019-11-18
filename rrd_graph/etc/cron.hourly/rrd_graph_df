@@ -9,12 +9,8 @@ function generate_df_graph {
 	start="$2"
 	mountpoint="$3"
 
-	generate_graph                                                          \
-		"$image_dir/df-$mountpoint-$period.png"                               \
-		--start "$start"                                                      \
-		--title "\"Disk usage - $mountpoint - by $period\""                   \
-		--slope-mode                                                          \
-		--lower-limit 0                                                       \
+	generate_graph "df-$mountpoint-$period" "$start"                        \
+		--title "Disk usage - $mountpoint - by $period"                       \
 		--vertical-label Bytes                                                \
 		"DEF:favg=$data_dir/df-$mountpoint/df_complex-free.rrd:value:AVERAGE" \
 		"DEF:fmin=$data_dir/df-$mountpoint/df_complex-free.rrd:value:MIN"     \
@@ -25,12 +21,11 @@ function generate_df_graph {
 		"CDEF:sum=favg,uavg,+"                                                \
 		"AREA:sum$color_area_df_free"                                         \
 		"AREA:uavg$color_area_df_used"                                        \
-		"LINE1:sum$color_line_df_free:\"Free\""                               \
-		"GPRINT:fmin:MIN:\"%5.1lf%sB Min\""                                   \
-		"GPRINT:favg:AVERAGE:\"%5.1lf%sB Avg\""                               \
-		"GPRINT:fmax:MAX:\"%5.1lf%sB Max\""                                   \
-		"GPRINT:favg:LAST:\"%5.1lf%sB Last\\l\""                              \
-		"COMMENT:\"$last_update\""
+		"LINE1:sum$color_line_df_free:Free"                                   \
+		"GPRINT:fmin:MIN:%5.1lf%sB Min"                                       \
+		"GPRINT:favg:AVERAGE:%5.1lf%sB Avg"                                   \
+		"GPRINT:fmax:MAX:%5.1lf%sB Max"                                       \
+		"GPRINT:favg:LAST:%5.1lf%sB Last\\l"
 }
 
 

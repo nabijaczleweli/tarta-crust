@@ -9,13 +9,9 @@ function generate_cpu_graph {
 	start="$2"
 	cpu_num="$3"
 
-	generate_graph                                                           \
-		"$image_dir/cpu-$cpu_num-$period.png"                                  \
-		--start "$start"                                                       \
-		--title "\"CPU $cpu_num usage - by $period\""                          \
-		--slope-mode                                                           \
+	generate_graph "cpu-$cpu_num-$period" "$start"                           \
+		--title "CPU $cpu_num usage - by $period"                              \
 		--upper-limit 100                                                      \
-		--lower-limit 0                                                        \
 		--rigid                                                                \
 		--vertical-label Percent                                               \
 		"DEF:idle=$data_dir/cpu-$cpu_num/cpu-idle.rrd:value:AVERAGE"           \
@@ -26,15 +22,14 @@ function generate_cpu_graph {
 		"DEF:softirq=$data_dir/cpu-$cpu_num/cpu-softirq.rrd:value:AVERAGE"     \
 		"DEF:interrupt=$data_dir/cpu-$cpu_num/cpu-interrupt.rrd:value:AVERAGE" \
 		"DEF:steal=$data_dir/cpu-$cpu_num/cpu-steal.rrd:value:AVERAGE"         \
-		"AREA:steal$color_cpu_steal:\"Steal\""                                 \
-		"AREA:system$color_cpu_system:\"System\":STACK"                        \
-		"AREA:waitio$color_cpu_waitio:\"Wait-IO\":STACK"                       \
-		"AREA:nice$color_cpu_nice:\"Nice\":STACK"                              \
-		"AREA:user$color_cpu_user:\"User\":STACK"                              \
-		"AREA:softirq$color_cpu_softirq:\"Soft-IRQ\c\":STACK"                  \
-		"AREA:interrupt$color_cpu_irq:\"IRQ\":STACK"                           \
-		"AREA:idle$color_cpu_idle:\"Idle\\c\":STACK"                           \
-		"COMMENT:\"$last_update\""
+		"AREA:steal$color_cpu_steal:Steal"                                     \
+		"AREA:system$color_cpu_system:System:STACK"                            \
+		"AREA:waitio$color_cpu_waitio:Wait-IO:STACK"                           \
+		"AREA:nice$color_cpu_nice:Nice:STACK"                                  \
+		"AREA:user$color_cpu_user:User:STACK"                                  \
+		"AREA:softirq$color_cpu_softirq:Soft-IRQ\c:STACK"                      \
+		"AREA:interrupt$color_cpu_irq:IRQ:STACK"                               \
+		"AREA:idle$color_cpu_idle:Idle\\c:STACK"
 }
 
 

@@ -2,7 +2,14 @@
 
 
 function generate_graph {
-  rrdtool graph --daemon unix:/var/run/rrdcached.sock --imgformat PNG --width 1400 --height 420 --alt-y-grid --font TITLE:9:. "$@" > /dev/null
+	fname="$1"
+	start="$2"
+	shift 2
+
+	rrdtool graph --daemon "unix:/var/run/rrdcached.sock" --imgformat "PNG" --width 1400 --height 420 --font "TITLE:12:." \
+		"$image_dir/$fname.png" --start "$start" --lower-limit 0                                                            \
+		"$@"                                                                                                                \
+		"COMMENT:$last_update" > /dev/null
 }
 
 function get_config {
@@ -19,8 +26,10 @@ function each_period {
 	#          (month '-1m' ' - by month')
 	#          (year  '-1y' ' - by year'))
 	for period in "hour" "day" "week" "month" "year"; do
-		"$cmd" "$period" "-1${period:0:1}" $@
+		"$cmd" "$period" "-1${period:0:1}" "$@"
 	done
+
+	"$cmd" "workday" "-8h" "$@"
 }
 
 
