@@ -1,0 +1,60 @@
+#!/bin/bash
+
+
+source "${0%\/[^\/]*}/rrd_graph_config.sh"
+
+
+function generate_interface_graph {
+	period="$1"
+	start="$2"
+	interface="$3"
+
+	generate_graph                                                        \
+		"$image_dir/cpu-$interface-$period.png"                               \
+		--start "$start"                                                      \
+		--title "\"$interface traffic - by $period\""                         \
+		--slope-mode                                                          \
+		--lower-limit 0                                                       \
+		--vertical-label "Bits/s"                                             \
+		"DEF:oavgraw=$data_dir/interface-$interface/if_octets.rrd:tx:AVERAGE" \
+		"DEF:ominraw=$data_dir/interface-$interface/if_octets.rrd:tx:MIN"     \
+		"DEF:omaxraw=$data_dir/interface-$interface/if_octets.rrd:tx:MAX"     \
+		"DEF:iavgraw=$data_dir/interface-$interface/if_octets.rrd:rx:AVERAGE" \
+		"DEF:iminraw=$data_dir/interface-$interface/if_octets.rrd:rx:MIN"     \
+		"DEF:imaxraw=$data_dir/interface-$interface/if_octets.rrd:rx:MAX"     \
+		"CDEF:oavg=oavgraw,8,*"                                               \
+		"CDEF:omin=ominraw,8,*"                                               \
+		"CDEF:omax=omaxraw,8,*"                                               \
+		"VDEF:otot=oavg,TOTAL"                                                \
+		"CDEF:iavg=iavgraw,8,*"                                               \
+		"CDEF:imin=iminraw,8,*"                                               \
+		"CDEF:imax=imaxraw,8,*"                                               \
+		"VDEF:itot=iavg,TOTAL"                                                \
+		"CDEF:tavg=oavg,iavg,+"                                               \
+		"CDEF:tmin=omin,imin,+"                                               \
+		"CDEF:tmax=omax,imax,+"                                               \
+		"LINE1:oavg$color_interface_outgoing:\"Outgoing\""                    \
+		"GPRINT:oavg:AVERAGE:\"%5.1lf%s Avg\""                                \
+		"GPRINT:omax:MAX:\"%5.1lf%s Max\""                                    \
+		"GPRINT:oavg:LAST:\"%5.1lf%s Last\""                                  \
+		"GPRINT:otot:\"%5.1lf%s Total\l\""                                    \
+		"LINE1:iavg$color_interface_incoming:\"Incoming\""                    \
+		"GPRINT:iavg:AVERAGE:\"%5.1lf%s Avg\""                                \
+		"GPRINT:imax:MAX:\"%5.1lf%s Max\""                                    \
+		"GPRINT:iavg:LAST:\"%5.1lf%s Last\""                                  \
+		"GPRINT:itot:\"%5.1lf%s Total\l\""                                    \
+		"COMMENT:\"  Total   \""                                              \
+		"GPRINT:tavg:AVERAGE:\"%5.1lf%s Avg\""                                \
+		"GPRINT:tmax:MAX:\"%5.1lf%s Max\""                                    \
+		"GPRINT:tavg:LAST:\"%5.1lf%s Last\l\""                                \
+		"COMMENT:\"$last_update\""
+}
+
+
+color_interface_incoming='#0bb6ff'  # blue
+color_interface_outgoing='#ff1300'  # red
+
+
+for interface in $(get_config interface Interface); do
+	each_period generate_interface_graph "$interface"
+done

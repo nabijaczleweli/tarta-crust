@@ -1,0 +1,85 @@
+#!/bin/bash
+
+
+source "${0%\/[^\/]*}/rrd_graph_config.sh"
+
+
+function generate_disk_octets_ops_graph {
+	period="$1"
+	start="$2"
+	devname="$3"
+	which="$4"
+	what="$5"
+	unit="$6"
+
+	generate_graph                                                     \
+		"$image_dir/disk-$which-$devname-$period.png"                    \
+		--start "$start"                                                 \
+		--title "\"$devname disk $what - by $period\""                   \
+		--slope-mode                                                     \
+		--lower-limit 0                                                  \
+		--vertical-label "\"$unit per second\""                          \
+		"DEF:ravg=$data_dir/disk-$devname/disk_$which.rrd:read:AVERAGE"  \
+		"DEF:rmin=$data_dir/disk-$devname/disk_$which.rrd:read:MIN"      \
+		"DEF:rmax=$data_dir/disk-$devname/disk_$which.rrd:read:MAX"      \
+		"VDEF:rtot=ravg,TOTAL"                                           \
+		"DEF:wavg=$data_dir/disk-$devname/disk_$which.rrd:write:AVERAGE" \
+		"DEF:wmin=$data_dir/disk-$devname/disk_$which.rrd:write:MIN"     \
+		"DEF:wmax=$data_dir/disk-$devname/disk_$which.rrd:write:MAX"     \
+		"VDEF:wtot=wavg,TOTAL"                                           \
+		"LINE1:ravg$color_line_disk_read:\"Read\""                       \
+		"GPRINT:rmin:MIN:\"%5.1lf%s Min\""                               \
+		"GPRINT:ravg:AVERAGE:\"%5.1lf%s Avg\""                           \
+		"GPRINT:rmax:MAX:\"%5.1lf%s Max\""                               \
+		"GPRINT:rtot:\"%5.1lf%s Total\l\""                               \
+		"LINE1:wavg$color_line_disk_write:\"Write\""                     \
+		"GPRINT:wmin:MIN:\"%5.1lf%s Min\""                               \
+		"GPRINT:wavg:AVERAGE:\"%5.1lf%s Avg\""                           \
+		"GPRINT:wmax:MAX:\"%5.1lf%s Max\""                               \
+		"GPRINT:wtot:\"%5.1lf%s Total\l\""                               \
+		"COMMENT:\"$last_update\""
+}
+
+function generate_disk_time_graph {
+	period="$1"
+	start="$2"
+	devname="$3"
+
+	generate_graph                                                   \
+		"$image_dir/disk-time-$devname-$period.png"                    \
+		--start "$start"                                               \
+		--title "\"$devname disk time per operation - by $period\""    \
+		--slope-mode                                                   \
+		--lower-limit 0                                                \
+		--vertical-label "\"Avg. Time/Op\""                            \
+		"DEF:ravg=$data_dir/disk-$devname/disk_time.rrd:read:AVERAGE"  \
+		"DEF:rmin=$data_dir/disk-$devname/disk_time.rrd:read:MIN"      \
+		"DEF:rmax=$data_dir/disk-$devname/disk_time.rrd:read:MAX"      \
+		"VDEF:rtot=ravg,TOTAL"                                         \
+		"DEF:wavg=$data_dir/disk-$devname/disk_time.rrd:write:AVERAGE" \
+		"DEF:wmin=$data_dir/disk-$devname/disk_time.rrd:write:MIN"     \
+		"DEF:wmax=$data_dir/disk-$devname/disk_time.rrd:write:MAX"     \
+		"VDEF:wtot=wavg,TOTAL"                                         \
+		"LINE1:ravg$color_line_disk_read:\"Read\""                     \
+		"GPRINT:rmin:MIN:\"%5.1lf%ss Min\""                            \
+		"GPRINT:ravg:AVERAGE:\"%5.1lf%ss Avg\""                        \
+		"GPRINT:rmax:MAX:\"%5.1lf%ss Max\""                            \
+		"GPRINT:rtot:\"%5.1lf%s Total\l\""                             \
+		"LINE1:wavg$color_line_disk_write:\"Write\""                   \
+		"GPRINT:wmin:MIN:\"%5.1lf%ss Min\""                            \
+		"GPRINT:wavg:AVERAGE:\"%5.1lf%ss Avg\""                        \
+		"GPRINT:wmax:MAX:\"%5.1lf%ss Max\""                            \
+		"GPRINT:wtot:\"%5.1lf%s Total\l\""                             \
+		"COMMENT:\"$last_update\""
+}
+
+
+color_line_disk_read='#0bb6ff'   # blue
+color_line_disk_write='#ff1300'  # red
+
+
+for devname in $(get_config disk Disk); do
+	each_period generate_disk_octets_ops_graph "$devname" octets traffic    Bytes
+	each_period generate_disk_octets_ops_graph "$devname" ops    operations Operations
+	each_period generate_disk_time_graph       "$devname"
+done

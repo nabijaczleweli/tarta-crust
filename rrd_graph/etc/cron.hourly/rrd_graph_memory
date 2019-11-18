@@ -1,0 +1,61 @@
+#!/bin/bash
+
+
+source "${0%\/[^\/]*}/rrd_graph_config.sh"
+
+
+function generate_memory_graph {
+	period="$1"
+	start="$2"
+
+	generate_graph                                                  \
+		"$image_dir/memory-$period.png"                               \
+		--start "$start"                                              \
+		--title "\"Memory usage - by $period\""                       \
+		--slope-mode                                                  \
+		--lower-limit 0                                               \
+		--base 1024                                                   \
+		--vertical-label Bytes                                        \
+		"DEF:bavg=$data_dir/memory/memory-buffered.rrd:value:AVERAGE" \
+		"DEF:bmin=$data_dir/memory/memory-buffered.rrd:value:MIN"     \
+		"DEF:bmax=$data_dir/memory/memory-buffered.rrd:value:MAX"     \
+		"DEF:cavg=$data_dir/memory/memory-cached.rrd:value:AVERAGE"   \
+		"DEF:cmin=$data_dir/memory/memory-cached.rrd:value:MIN"       \
+		"DEF:cmax=$data_dir/memory/memory-cached.rrd:value:MAX"       \
+		"DEF:favg=$data_dir/memory/memory-free.rrd:value:AVERAGE"     \
+		"DEF:fmin=$data_dir/memory/memory-free.rrd:value:MIN"         \
+		"DEF:fmax=$data_dir/memory/memory-free.rrd:value:MAX"         \
+		"DEF:uavg=$data_dir/memory/memory-used.rrd:value:AVERAGE"     \
+		"DEF:umin=$data_dir/memory/memory-used.rrd:value:MIN"         \
+		"DEF:umax=$data_dir/memory/memory-used.rrd:value:MAX"         \
+		"AREA:uavg$color_memory_used:\"Used        \""                \
+		"GPRINT:umin:MIN:\"%5.1lf%sB Min\""                           \
+		"GPRINT:uavg:AVERAGE:\"%5.1lf%sB Avg\""                       \
+		"GPRINT:umax:MAX:\"%5.1lf%sB Max\""                           \
+		"GPRINT:uavg:LAST:\"%5.1lf%sB Last\l\""                       \
+		"AREA:bavg$color_memory_buffered:\"Buffer cache\":STACK"      \
+		"GPRINT:bmin:MIN:\"%5.1lf%sB Min\""                           \
+		"GPRINT:bavg:AVERAGE:\"%5.1lf%sB Avg\""                       \
+		"GPRINT:bmax:MAX:\"%5.1lf%sB Max\""                           \
+		"GPRINT:bavg:LAST:\"%5.1lf%sB Last\l\""                       \
+		"AREA:cavg$color_memory_cached:\"Page cache  \":STACK"        \
+		"GPRINT:cmin:MIN:\"%5.1lf%sB Min\""                           \
+		"GPRINT:cavg:AVERAGE:\"%5.1lf%sB Avg\""                       \
+		"GPRINT:cmax:MAX:\"%5.1lf%sB Max\""                           \
+		"GPRINT:cavg:LAST:\"%5.1lf%sB Last\l\""                       \
+		"AREA:favg$color_memory_free:\"Free        \":STACK"          \
+		"GPRINT:fmin:MIN:\"%5.1lf%sB Min\""                           \
+		"GPRINT:favg:AVERAGE:\"%5.1lf%sB Avg\""                       \
+		"GPRINT:fmax:MAX:\"%5.1lf%sB Max\""                           \
+		"GPRINT:favg:LAST:\"%5.1lf%sB Last\l\""                       \
+		"COMMENT:\"$last_update\""
+}
+
+
+color_memory_free='#76d6ff'      # blue
+color_memory_cached='#ffdb70'    # yellow
+color_memory_buffered='#c979ff'  # pink
+color_memory_used='#ff7a70'      # red
+
+
+each_period generate_memory_graph

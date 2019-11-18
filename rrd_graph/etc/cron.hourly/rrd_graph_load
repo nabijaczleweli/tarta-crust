@@ -1,0 +1,51 @@
+#!/bin/bash
+
+
+source "${0%\/[^\/]*}/rrd_graph_config.sh"
+
+
+function generate_load_graph {
+	period="$1"
+	start="$2"
+
+	generate_graph                                         \
+		"$image_dir/load-$period.png"                        \
+		--start "$start"                                     \
+		--title "\"Load average - by $period\""              \
+		--slope-mode                                         \
+		--lower-limit 0                                      \
+		--units-exponent 0                                   \
+		"DEF:savg=$data_dir/load/load.rrd:shortterm:AVERAGE" \
+		"DEF:smin=$data_dir/load/load.rrd:shortterm:MIN"     \
+		"DEF:smax=$data_dir/load/load.rrd:shortterm:MAX"     \
+		"DEF:mavg=$data_dir/load/load.rrd:midterm:AVERAGE"   \
+		"DEF:mmin=$data_dir/load/load.rrd:midterm:MIN"       \
+		"DEF:mmax=$data_dir/load/load.rrd:midterm:MAX"       \
+		"DEF:lavg=$data_dir/load/load.rrd:longterm:AVERAGE"  \
+		"DEF:lmin=$data_dir/load/load.rrd:longterm:MIN"      \
+		"DEF:lmax=$data_dir/load/load.rrd:longterm:MAX"      \
+		"LINE1:savg$color_load_shortterm:\" 1 min\""         \
+		"GPRINT:smin:MIN:\"%4.2lf Min\""                     \
+		"GPRINT:savg:AVERAGE:\"%4.2lf Avg\""                 \
+		"GPRINT:smax:MAX:\"%4.2lf Max\""                     \
+		"GPRINT:savg:LAST:\"%4.2lf Last\l\""                 \
+		"LINE1:mavg$color_load_midterm:\" 5 min\""           \
+		"GPRINT:mmin:MIN:\"%4.2lf Min\""                     \
+		"GPRINT:mavg:AVERAGE:\"%4.2lf Avg\""                 \
+		"GPRINT:mmax:MAX:\"%4.2lf Max\""                     \
+		"GPRINT:mavg:LAST:\"%4.2lf Last\l\""                 \
+		"LINE1:lavg$color_load_longterm:\"15 min\""          \
+		"GPRINT:lmin:MIN:\"%4.2lf Min\""                     \
+		"GPRINT:lavg:AVERAGE:\"%4.2lf Avg\""                 \
+		"GPRINT:lmax:MAX:\"%4.2lf Max\""                     \
+		"GPRINT:lavg:LAST:\"%4.2lf Last\l\""                 \
+		"COMMENT:\"$last_update\""
+}
+
+
+color_load_shortterm='#ffbf00'  # yellow
+color_load_midterm='#0bb6ff'    # blue
+color_load_longterm='#ff1300'   # red
+
+
+each_period generate_load_graph

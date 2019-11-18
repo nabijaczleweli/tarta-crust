@@ -1,0 +1,54 @@
+#!/bin/bash
+
+
+source "${0%\/[^\/]*}/rrd_graph_config.sh"
+
+
+function generate_df_graph {
+	period="$1"
+	start="$2"
+	mountpoint="$3"
+
+	generate_graph                                                          \
+		"$image_dir/df-$mountpoint-$period.png"                               \
+		--start "$start"                                                      \
+		--title "\"Disk usage - $mountpoint - by $period\""                   \
+		--slope-mode                                                          \
+		--lower-limit 0                                                       \
+		--vertical-label Bytes                                                \
+		"DEF:favg=$data_dir/df-$mountpoint/df_complex-free.rrd:value:AVERAGE" \
+		"DEF:fmin=$data_dir/df-$mountpoint/df_complex-free.rrd:value:MIN"     \
+		"DEF:fmax=$data_dir/df-$mountpoint/df_complex-free.rrd:value:MAX"     \
+		"DEF:uavg=$data_dir/df-$mountpoint/df_complex-used.rrd:value:AVERAGE" \
+		"DEF:umin=$data_dir/df-$mountpoint/df_complex-used.rrd:value:MIN"     \
+		"DEF:umax=$data_dir/df-$mountpoint/df_complex-used.rrd:value:MAX"     \
+		"CDEF:sum=favg,uavg,+"                                                \
+		"AREA:sum$color_area_df_free"                                         \
+		"AREA:uavg$color_area_df_used"                                        \
+		"LINE1:sum$color_line_df_free:\"Free\""                               \
+		"GPRINT:fmin:MIN:\"%5.1lf%sB Min\""                                   \
+		"GPRINT:favg:AVERAGE:\"%5.1lf%sB Avg\""                               \
+		"GPRINT:fmax:MAX:\"%5.1lf%sB Max\""                                   \
+		"GPRINT:favg:LAST:\"%5.1lf%sB Last\\l\""                              \
+		"COMMENT:\"$last_update\""
+}
+
+
+color_line_df_free='#0bb6ff'  # blue
+color_line_df_used='#ff1300'  # red
+color_area_df_free='#76d6ff'  # blue
+color_area_df_used='#ff7a70'  # red
+
+
+for mountpoint in $(get_config df MountPoint); do
+# for mountpoint in / /shr/ /mnt/owo/uwu; do
+	if [[ "$mountpoint" == "/" ]]; then
+		mountpoint="root"
+	fi
+
+	mountpoint="${mountpoint#/}"
+	mountpoint="${mountpoint%/}"
+	mountpoint="${mountpoint//\//-}"
+
+	each_period generate_df_graph "$mountpoint"
+done
