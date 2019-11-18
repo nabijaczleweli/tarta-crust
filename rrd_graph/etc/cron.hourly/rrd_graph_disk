@@ -13,7 +13,7 @@ function generate_disk_octets_ops_graph {
 	unit="$6"
 
 	generate_graph "disk-$which-$devname-$period" "$start"             \
-		--title "$devname disk $what - by $    period"                   \
+		--title "$devname disk $what - by $period"                       \
 		--vertical-label "$unit per second"                              \
 		"DEF:ravg=$data_dir/disk-$devname/disk_$which.rrd:read:AVERAGE"  \
 		"DEF:rmin=$data_dir/disk-$devname/disk_$which.rrd:read:MIN"      \
