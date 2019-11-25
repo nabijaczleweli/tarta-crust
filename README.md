@@ -17,6 +17,8 @@ See `rrd_graph_config.sh` for configuration – default
 	collectd config in `/etc/collectd/collectd.conf.d/{subsystem}.conf`, and
 	output directory is `/var/www/html/status/rrd`.
 
+Note: this was replaced with a netdata -> prometheus -> grafana stack on my machine, and so remains unmaintained.
+
 ![Output dir listing](https://user-images.githubusercontent.com/6709544/69073962-b1717e80-0a2e-11ea-9151-a32574f99017.png)
 ![Load 8-hour average](https://user-images.githubusercontent.com/6709544/69074021-db2aa580-0a2e-11ea-87e0-82d885010275.png)
 ![1-hour network traffic](https://user-images.githubusercontent.com/6709544/69074081-fac1ce00-0a2e-11ea-8b12-1f1cc1578f20.png)
