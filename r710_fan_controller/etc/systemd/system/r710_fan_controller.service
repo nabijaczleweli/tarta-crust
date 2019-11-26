@@ -1,0 +1,9 @@
+[Unit]
+Description=R710 fan controller
+
+[Service]
+ExecStart=/usr/sbin/r710_fan_controller.sh
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

@@ -30,3 +30,41 @@ A Rust reimplementation of https://github.com/osuosl/fedpkg-qemu/blob/603dd6670b
 
 Additional features:
   * `KSM_SLEEP_MILLISECS` in `/etc/default/kvm` => `/sys/kernel/mm/ksm/sleep_millisecs`
+
+## r710_fan_controller
+
+Modified version of Rich Gannon's [`r710_fan_controller.sh`](http://richgannon.net/projects/dellfanspeed), and a systemd unit.
+
+```shell
+nabijaczleweli@tarta:~$ sudo systemctl start r710_fan_controller.service
+nabijaczleweli@tarta:~$ sudo systemctl status r710_fan_controller.service
+● r710_fan_controller.service - R710 fan controller
+   Loaded: loaded (/etc/systemd/system/r710_fan_controller.service; enabled; vendor preset: enabled)
+   Active: active (running) since Mon 2019-12-09 21:57:33 CET; 51min ago
+ Main PID: 24411 (r710_fan_contro)
+    Tasks: 2 (limit: 4915)
+   Memory: 13.9M
+   CGroup: /system.slice/r710_fan_controller.service
+           ├─ 6444 sleep 5
+           └─24411 /bin/sh /usr/sbin/r710_fan_controller.sh
+
+Dec 09 21:57:33 tarta systemd[1]: Started R710 fan controller.
+Dec 09 21:57:33 tarta r710_fan_controller.sh[24411]: Changing to fan level 3.
+Dec 09 21:57:33 tarta r710_fan_controller.sh[24411]: Highest CPU core temperature: 52 Celcius.
+Dec 09 21:57:33 tarta r710_fan_controller.sh[24411]: Highest drive temperature: 40 Celcius.
+Dec 09 21:58:20 tarta r710_fan_controller.sh[24411]: Changing to fan level 2.
+Dec 09 21:58:20 tarta r710_fan_controller.sh[24411]: Highest CPU core temperature: 47 Celcius.
+Dec 09 21:58:20 tarta r710_fan_controller.sh[24411]: Highest drive temperature: 39 Celcius.
+```
+
+```shell
+nabijaczleweli@tarta:~$ sudo systemctl stop r710_fan_controller.service
+nabijaczleweli@tarta:~$ sudo systemctl status r710_fan_controller.service
+
+# ………
+Dec 09 22:49:10 tarta systemd[1]: Stopping R710 fan controller...
+Dec 09 22:49:10 tarta r710_fan_controller.sh[24411]: Exit requested.
+Dec 09 22:49:10 tarta r710_fan_controller.sh[24411]: Enabling iDRAC automatic fan control.
+Dec 09 22:49:10 tarta systemd[1]: r710_fan_controller.service: Succeeded.
+Dec 09 22:49:10 tarta systemd[1]: Stopped R710 fan controller.
+```
