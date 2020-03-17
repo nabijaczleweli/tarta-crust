@@ -89,3 +89,8 @@ UnPreparing sid-i386-neomutt/...
 
 The created environment is destroyed when `prep-buildd` is re-ran with --undo,
 the upperdir is tmpfs, so no changes are propagated to the base chroot.
+
+## gen-equiv-build-dep
+
+Generate a simple [`equivs`](https://packages.debian.org/equivs) descriptor from `[$1/][debian/]control`,
+declaring the same `Depends:` as the `Build-Depends:` contained therein.

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -e
+
+
+cd "${1:-.}"
+[[ -d "debian" ]] && cd debian
+
+awk '
+BEGIN {
+	bd = 0
+
+	print "Section: misc"
+	print "Priority: optional"
+	print "Version: '"$(date "+%Y%m%d.%H%M%S")"'"
+	print "Architecture: '"$(dpkg --print-architecture)"'"
+	print ""
+}
+
+/^Source:/ {
+	$1 = "Package:"
+	$2 = $2 "-build-deps"
+	print
+}
+
+/^Build-Depends:/ {
+	bd = 1
+	$1 = "Depends:"
+}
+
+/^[^[:space:]]/ {
+	if(bd && !/^Depends:/)
+		exit
+}
+
+bd' control
