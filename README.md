@@ -68,3 +68,24 @@ Dec 09 22:49:10 tarta r710_fan_controller.sh[24411]: Enabling iDRAC automatic fa
 Dec 09 22:49:10 tarta systemd[1]: r710_fan_controller.service: Succeeded.
 Dec 09 22:49:10 tarta systemd[1]: Stopped R710 fan controller.
 ```
+
+## prep-buildd
+
+Create an tmpfs-on-directory overlay mount over a chroot from "~/store/chroots", with `/proc` bind-mounted:
+```shell
+nabijaczleweli@tarta:~$ prep-buildd
+No base!
+Must be one of: sid-i386  sid-with-nab
+nabijaczleweli@tarta:~$ prep-buildd sid-i386 neomutt
+Preparing sid-i386-neomutt/...
+[sudo] password for nabijaczleweli:
+nabijaczleweli@tarta:~$ # Copy your build files in
+nabijaczleweli@tarta:~$ sudo chroot sid-i386-neomutt/
+root@tarta:/# # Do your build
+root@tarta:/# exit
+nabijaczleweli@tarta:~$ prep-buildd --undo sid-i386 neomutt
+UnPreparing sid-i386-neomutt/...
+```
+
+The created environment is destroyed when `prep-buildd` is re-ran with --undo,
+the upperdir is tmpfs, so no changes are propagated to the base chroot.

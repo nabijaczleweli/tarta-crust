@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -e
+
+
+undo=""
+if [[ "$1" == "--undo" ]]; then
+	undo="Un"
+	shift
+fi
+
+
+base="$1"
+name="$2"
+
+bases_dir=~/store/chroots/
+bases="$(ls -C "$bases_dir")"
+
+if [[ "${base}" == "" ]]; then echo -e "No base!\nMust be one of: ${bases}"; exit 1; fi
+basedir="${bases_dir}${base}"
+
+if ! [[ -d "${basedir}" ]]; then echo -e "Unknown base!\nMust be one of: ${bases}"; exit 1; fi
+
+if [[ "${name}" == "" ]]; then echo -e "No name!"; exit 1; fi
+builddir="${base}-${name}/"
+upperdir=".prep-buildd--${builddir}/"
+
+
+echo "${undo}Preparing ${builddir}..."
+
+
+if [[ "${undo}" == "" ]]; then
+	mkdir "${builddir}" "${upperdir}"
+
+	sudo mount -t tmpfs "buildd-${base}" "${upperdir}"
+	mkdir "${upperdir}"{up,work}
+
+	sudo mount -t overlay overlay -o "lowerdir=${basedir},upperdir=${upperdir}up,workdir=${upperdir}work" "${builddir}"
+	sudo mount --bind /proc "${builddir}proc"
+else
+	sudo umount "${builddir}proc"
+	sudo umount "${builddir}"
+
+	sudo umount "${upperdir}"
+
+	rmdir "${builddir}" "${upperdir}"
+fi
