@@ -1,5 +1,5 @@
 CARGO := cargo
-PREFIX := /usr/sbin/
+PREFIX := /usr/local/sbin/
 
 
 .PHONY: all build install clean

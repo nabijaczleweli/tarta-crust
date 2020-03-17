@@ -13,7 +13,7 @@
 # at your own risk.
 #
 # Updated by nabijaczleweli (https://github.com/nabijaczleweli/tarta-crust):
-# 2019-12-08: slower fans, a touch higher trigger temps, print changing and highest temps messages even with DEBUG=0
+# 2019-12-08: slower fans by default, print changing and highest temps messages even with DEBUG=0
 
 #
 # Set to 1 if PERC6, H200, H700, or other LSI MegaRAID-based
@@ -60,16 +60,17 @@ SLEEP_TIMER_MULTIPLY=6
 # LEVEL0 is assumed when below LEVEL1.
 #
 CPU_LEVEL1=37
-CPU_LEVEL2=43
-CPU_LEVEL3=49
+CPU_LEVEL2=45  # +2
+CPU_LEVEL3=51  # +2
 CPU_LEVEL4=56
 CPU_LEVEL5=63
 
 HDD_LEVEL1=37
-HDD_LEVEL2=39
-HDD_LEVEL3=41
-HDD_LEVEL4=43
-HDD_LEVEL5=45
+HDD_LEVEL2=40
+HDD_LEVEL3=42
+HDD_LEVEL4=44
+HDD_LEVEL5=46
+# +1 to 2 and down
 
 #
 # Set the `ipmitool` connect line here.  Right now everything is programmed
