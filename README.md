@@ -29,7 +29,7 @@ Note: this was replaced with a netdata -> prometheus -> grafana stack on my mach
 A Rust reimplementation of https://github.com/osuosl/fedpkg-qemu/blob/603dd6670b5fbb851ceac54b4bc9a10ec82a9c9d/ksmctl.c with systemd config from https://packages.debian.org/buster/ksmtuned.
 
 Additional features:
-  * `KSM_SLEEP_MILLISECS` in `/etc/default/kvm` => `/sys/kernel/mm/ksm/sleep_millisecs`
+  * `KSM_SLEEP_MILLISECS` in `/etc/default/ksm` => `/sys/kernel/mm/ksm/sleep_millisecs`
 
 ## r710_fan_controller
 
@@ -94,3 +94,10 @@ the upperdir is tmpfs, so no changes are propagated to the base chroot.
 
 Generate a simple [`equivs`](https://packages.debian.org/equivs) descriptor from `[$1/][debian/]control`,
 declaring the same `Depends:` as the `Build-Depends:` contained therein.
+
+## .config/htop
+
+`htop` config, of [**@ThePhD**](https://github.com/ThePhD/dotfiles/commit/e64186c944b5f08ac9e0e2a8498498dccbd22707) fame.
+
+[![htop screenshot 1](screenshots/htop-647541072033218611.png)](https://raw.githubusercontent.com/nabijaczleweli/topfig/master/screenshots/htop-647541072033218611.png)
+[![htop screenshot 2](screenshots/htop-647540165316968467.png)](https://raw.githubusercontent.com/nabijaczleweli/topfig/master/screenshots/htop-647540165316968467.png)
