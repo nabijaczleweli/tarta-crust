@@ -104,4 +104,4 @@ declaring the same `Depends:` as the `Build-Depends:` contained therein.
 
 ## dpkg-linux-doc-strip-html
 
-Makes dpkg ignore `/usr/share/doc/linux-doc-*/html` during unpack if placed in `/etc/dpkg/dpkg.cfg.d`.
+Makes dpkg ignore `/usr/share/doc/linux-doc-*/html` and the symlink in `linux-doc` during unpack if placed in `/etc/dpkg/dpkg.cfg.d`.

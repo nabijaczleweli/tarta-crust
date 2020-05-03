@@ -1,4 +1,5 @@
 # /etc/dpkg/dpkg.cfg.d/linux-doc-strip-html: omit html linux documentation when unpacking
 
+path-exclude=/usr/share/doc/linux-doc/html
 path-exclude=/usr/share/doc/linux-doc-*/html
 path-exclude=/usr/share/doc/linux-doc-*/html/*
