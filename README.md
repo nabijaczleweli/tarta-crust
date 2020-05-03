@@ -101,3 +101,7 @@ declaring the same `Depends:` as the `Build-Depends:` contained therein.
 
 [![htop screenshot 1](screenshots/htop-647541072033218611.png)](https://raw.githubusercontent.com/nabijaczleweli/topfig/master/screenshots/htop-647541072033218611.png)
 [![htop screenshot 2](screenshots/htop-647540165316968467.png)](https://raw.githubusercontent.com/nabijaczleweli/topfig/master/screenshots/htop-647540165316968467.png)
+
+## dpkg-linux-doc-strip-html
+
+Makes dpkg ignore `/usr/share/doc/linux-doc-*/html` during unpack if placed in `/etc/dpkg/dpkg.cfg.d`.
