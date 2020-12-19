@@ -37,6 +37,8 @@ if [[ "${undo}" == "" ]]; then
 
 	sudo mount -t overlay overlay -o "lowerdir=${basedir},upperdir=${upperdir}up,workdir=${upperdir}work" "${builddir}"
 	sudo mount --bind /proc "${builddir}proc"
+
+	sudo sh -c "echo ${base} ${name} > ${builddir}etc/debian_chroot"
 else
 	sudo umount "${builddir}proc"
 	sudo umount "${builddir}"
