@@ -1,0 +1,4 @@
+#!/bin/sh
+[ -z "$1" ] && { echo "No commit message"; exit 1; }
+cd /etc/dhcp
+~/bin/push dhcpd dhcpd.conf "$1" restart isc-dhcp-server

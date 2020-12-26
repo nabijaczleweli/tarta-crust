@@ -4,5 +4,4 @@ cd /usr/local/etc/dnsmasq/adblock
 ./generate
 systemctl reload dnsmasq
 
-cd ..
-sudo -u shared-config ~shared-config/bin/push dnsmasq "dnsmasq-adblock-update-hosts $(date -Iseconds)" reload dnsmasq
+sudo -u shared-config ~shared-config/bin/push-dnsmasq "dnsmasq-adblock-update-hosts $(date -Iseconds)"

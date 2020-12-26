@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+SECTION="$1"
+
+. ~/git-config
+git add $2
+git commit -m "$3" 2>/dev/null || :
+shift 3
+
+for r in $(git remote); do
+	git push "$r"
+	ssh "$r" '~/bin/recv '"$GIT_WORK_TREE $SECTION $*"
+done

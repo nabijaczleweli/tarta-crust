@@ -1,0 +1,9 @@
+## Allow shared-config to elevate to reload services
+Cmnd_Alias SYSTEMD_RELOAD = \
+  /usr/bin/systemctl reload -- *, \
+  /usr/bin/systemctl restart -- *, \
+  /bin/systemctl reload -- *, \
+  /bin/systemctl restart -- *
+
+# allow any user to use basic read-only ZFS commands
+shared-config ALL = (root) NOPASSWD: SYSTEMD_RELOAD

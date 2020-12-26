@@ -1,0 +1,4 @@
+#!/bin/sh
+[ -z "$1" ] && { echo "No commit message"; exit 1; }
+cd /usr/local/etc/dnsmasq
+~/bin/push dnsmasq . "dnsmasq-adblock-update-hosts $(date -Iseconds)" reload dnsmasq

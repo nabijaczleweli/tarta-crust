@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+cd "$1"
+SECTION="$2"
+ACTION="$3"
+shift 3
+
+. ~/git-config
+git reset --hard HEAD
+
+sudo systemctl "$ACTION" -- $*
