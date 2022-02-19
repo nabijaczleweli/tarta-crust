@@ -11,3 +11,7 @@ for r in $(git remote); do
 	git push "$r"
 	ssh "$r" '~/bin/recv '"$GIT_WORK_TREE $SECTION $*"
 done
+
+ACTION="$1"
+shift
+sudo systemctl "$ACTION" -- $*
