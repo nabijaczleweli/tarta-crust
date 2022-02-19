@@ -14,7 +14,7 @@ base="$1"
 name="$2"
 
 bases_dir=~/store/chroots/
-bases="$(ls -C "$bases_dir")"
+bases="$(find "$bases_dir" -mindepth 1 -maxdepth 1 -type d | tr '\n' ' ' | sed "s:$bases_dir::g")"
 
 if [[ "${base}" == "" ]]; then echo -e "No base!\nMust be one of: ${bases}"; exit 1; fi
 basedir="${bases_dir}${base}"
@@ -39,6 +39,8 @@ if [[ "${undo}" == "" ]]; then
 	sudo mount --bind /proc "${builddir}proc"
 
 	sudo sh -c "echo ${base} ${name} > ${builddir}etc/debian_chroot"
+	echo export TERM=xterm-256color
+	echo unset LANGUAGE LANG
 else
 	sudo umount "${builddir}proc"
 	sudo umount "${builddir}"
