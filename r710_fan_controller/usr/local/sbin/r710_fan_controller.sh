@@ -100,12 +100,13 @@ FAN_LEVEL1=0x05  # 1680 RPM
 FAN_LEVEL2=0x09  # 2160 RPM
 FAN_LEVEL3=0x11  # 3120 RPM
 FAN_LEVEL4=0x20  # 4690 RPM
-FAN_LEVEL5=auto
+FAN_LEVEL5=0x22
+#FAN_LEVEL5=auto
 
 #
 # Don't change this.  Initializing variables.
 #
-OLD_LEVEL=5
+OLD_LEVEL=10
 FAN_IS_AUTO=1
 CMD_FAN_AUTO=0
 TIMER_MULTIPLY=0
@@ -126,7 +127,7 @@ trap exit_graceful INT
 poll_drive_temp() {
 	high_drive_temp=0
 	if [ $MEGACLI -eq 1 ]; then
-		for drive_temp in `megacli -PDList -aALL | grep "Drive Temperature" | awk '{print $3}' | cut -d ':' -f2 | cut -d 'C' -f1`; do
+		for drive_temp in `megacli -PDList -aALL | awk '/Drive Temperature/ {print $3}' | cut -d ':' -f2 | cut -d 'C' -f1`; do
 			if [ $drive_temp -gt $high_drive_temp ]; then
 				high_drive_temp=$drive_temp
 			fi
@@ -146,13 +147,12 @@ poll_drive_temp() {
 	if [ $MEGARAID -eq 1 ]; then
 		for drive in 00 01 02 03 04 05 06 07; do
 			if [ "`smartctl -d megaraid,$drive -a /dev/sda -a | grep SAS`" != "" ]; then
-				drive_temp=`smartctl -d megaraid,$drive /dev/sda -A | grep "Current Drive Temperature" | awk '{print $4}' | tail -n1` || drive_temp=0
+				drive_temp=`smartctl -d megaraid,$drive /dev/sda -A | awk '/Current Drive Temperature/ {print $4}'` || drive_temp=0
 			else
-				drive_temp=`smartctl -d megaraid,$drive -A /dev/sda | grep "Temperature" | awk '{print $10}' | tail -n1` || drive_temp=0
+				drive_temp=`smartctl -d megaraid,$drive -A /dev/sda | awk '/Temperature/ {last = $10}  END {print last}'` || drive_temp=0
 			fi
 
 			if [ $drive_temp ]; then
-
 				if [ $drive_temp -gt $high_drive_temp ]; then
 					high_drive_temp=$drive_temp
 				fi
@@ -165,14 +165,17 @@ poll_drive_temp() {
 			fi
 		done
 	else
-		for drive in `lsblk -d | grep sd | awk '{print $1}'`; do
-			if [ "`smartctl -a $drive -a | grep SAS`" != "" ]; then
-				drive_temp=`smartctl /dev/$drive -A | grep "Current Drive Temperature" | awk '{print $4}'` || drive_temp=0
+		for drive in `lsblk -d | awk '/sd|nvme/ {sub(/n[[:digit:]]+/, ""); print $1}' | uniq`; do
+			if smartctl -a $drive -a | grep -q SAS; then
+				drive_temp=`smartctl /dev/$drive -A | awk '/Current Drive Temperature/ {print $4}'` || drive_temp=0
+			elif ! [ "${drive#nvme}" = "$drive" ]; then
+				drive_temp=`smartctl -A /dev/$drive | awk '/^Temperature:/ {print $(NF-1); exit}'` || drive_temp=0
 			else
-				drive_temp=`smartctl -A /dev/$drive | grep "Temperature" | awk '{print $10}' | tail -n1` || drive_temp=0
+				drive_temp=`smartctl -A /dev/$drive | awk '/Temperature/ {last = $10}  END {print last}'` || drive_temp=0
 			fi
 
-			if [ $drive_temp ]; then
+			if [ -n "$drive_temp" ]; then
+#echo $drive: $drive_temp
 				if [ $drive_temp -gt $high_drive_temp ]; then
 					high_drive_temp=$drive_temp
 				fi

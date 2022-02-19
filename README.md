@@ -33,7 +33,7 @@ Additional features:
 
 ## r710_fan_controller
 
-Modified version of Rich Gannon's [`r710_fan_controller.sh`](http://richgannon.net/projects/dellfanspeed), and a systemd unit.
+Modified version of Rich Gannon's [`r710_fan_controller.sh`](http://richgannon.net/projects/dellfanspeed), a systemd unit, and NVMe support.
 
 ```shell
 nabijaczleweli@tarta:~$ sudo systemctl start r710_fan_controller.service
