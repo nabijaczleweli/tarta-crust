@@ -1,8 +1,17 @@
-#!/bin/bash
+#!/bin/sh
+command -v wget > /dev/null || { echo "No wget! Convert to curl." >&2; exit 77; }
 
 rm -rf hosts.old
-mv hosts hosts.old 2>&1 || :
-mkdir hosts
+mv hosts hosts.old
+mkdir -p hosts
 
-cd hosts
-awk -f ../process_hostslists.awk ../hostslists.url
+while read -r host; do
+	[ -z "$host" ] || ! [ "${host#'#'}" = "$host" ] && continue
+	outf="${host#*://}"
+	outf="${outf%'?'*}"
+	outf="$(echo "$outf" | sed 's:[/|.]:_:g')"
+	[ "${outf%hosts*}" = "$outf" ] && outf="${outf}_hosts"
+	echo "Downloading $host"
+	wget -q "$host" -O- | awk -f sanitise_hostlist.awk > "hosts/$outf" &
+done < hostslists.url
+wait
