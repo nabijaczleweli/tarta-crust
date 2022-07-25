@@ -1,10 +1,8 @@
-#!/bin/bash
-
-set -e
+#!/bin/sh -e
 
 
-undo=""
-if [[ "$1" == "--undo" ]]; then
+undo=
+if [ "$1" = "-u" ]; then
 	undo="Un"
 	shift
 fi
@@ -13,15 +11,21 @@ fi
 base="$1"
 name="$2"
 
-bases_dir=~/store/chroots/
-bases="$(find "$bases_dir" -mindepth 1 -maxdepth 1 -type d | tr '\n' ' ' | sed "s:$bases_dir::g")"
+bases_dir=$HOME/store/chroots/
+err() {
+	echo "$1" >&2
+	echo "Must be one of:" $(find "$bases_dir" -mindepth 1 -maxdepth 1 -type d | sed "s:$bases_dir::g") >&2
+	exit 1
+}
 
-if [[ "${base}" == "" ]]; then echo -e "No base!\nMust be one of: ${bases}"; exit 1; fi
 basedir="${bases_dir}${base}"
+[ -z "${base}"    ] && err "No base!"
+[ -d "${basedir}" ] || err "Unknown base!"
 
-if ! [[ -d "${basedir}" ]]; then echo -e "Unknown base!\nMust be one of: ${bases}"; exit 1; fi
-
-if [[ "${name}" == "" ]]; then echo -e "No name!"; exit 1; fi
+if [ -z "${name}" ]; then
+	echo "No name!" >&2
+	exit 1
+fi
 builddir="${base}-${name}/"
 upperdir=".prep-buildd--${builddir}/"
 
@@ -29,11 +33,10 @@ upperdir=".prep-buildd--${builddir}/"
 echo "${undo}Preparing ${builddir}..."
 
 
-if [[ "${undo}" == "" ]]; then
+if [ -z "${undo}" ]; then
 	mkdir "${builddir}" "${upperdir}"
-
 	sudo mount -t tmpfs "buildd-${base}" "${upperdir}"
-	mkdir "${upperdir}"{up,work}
+	mkdir "${upperdir}up" "${upperdir}work"
 
 	sudo mount -t overlay overlay -o "lowerdir=${basedir},upperdir=${upperdir}up,workdir=${upperdir}work" "${builddir}"
 	sudo mount --bind /proc "${builddir}proc"
