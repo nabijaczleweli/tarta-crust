@@ -44,11 +44,8 @@ if [ -z "${undo}" ]; then
 	sudo sh -c "echo ${base} ${name} > ${builddir}etc/debian_chroot"
 	echo export TERM=xterm-256color
 	echo unset LANGUAGE LANG
+	echo 'PATH=/usr/bin:/usr/sbin:$PATH'
 else
-	sudo umount "${builddir}proc"
-	sudo umount "${builddir}"
-
-	sudo umount "${upperdir}"
-
+	sudo umount "${builddir}proc" "${builddir}" "${upperdir}"
 	rmdir "${builddir}" "${upperdir}"
 fi
