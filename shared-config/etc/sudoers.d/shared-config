@@ -5,5 +5,4 @@ Cmnd_Alias SYSTEMD_RELOAD = \
   /bin/systemctl reload -- *, \
   /bin/systemctl restart -- *
 
-# allow any user to use basic read-only ZFS commands
 shared-config ALL = (root) NOPASSWD: SYSTEMD_RELOAD

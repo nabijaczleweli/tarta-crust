@@ -1,0 +1,11 @@
+#!/bin/sh
+existing="$(git -C bin remote)"
+{
+	echo "git clone '$(hostname):bin'"
+	for d in *.git; do
+		echo "git clone -o '$(hostname)' --bare '$(hostname):$d'"
+		for r in $existing; do
+			echo "git remote add '$r' '$r:$d'"
+		done
+	done
+} | ssh "$1" sh -x
