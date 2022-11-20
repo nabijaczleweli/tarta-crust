@@ -1,7 +1,7 @@
 #!/bin/sh
 
 cd /usr/local/etc/dnsmasq/adblock
-./generate || exit
+setpriv --reuid=shared-config --regid="$(id -gn shared-config)" --init-groups ./generate || exit
 #systemctl reload dnsmasq
 
 sudo -iu shared-config push-dnsmasq "dnsmasq-adblock-update-hosts $(date -Iseconds)"

@@ -9,9 +9,9 @@ shift 3
 
 for r in $(git remote); do
 	git push "$r"
-	ssh "$r" 'recv '"$GIT_WORK_TREE $SECTION $*"
+	ssh "$r" '~/bin/recv '"$GIT_WORK_TREE $SECTION $*"
 done
 
-ACTION="$1
+ACTION="$1"
 shift
 sudo systemctl "$ACTION" -- $*
