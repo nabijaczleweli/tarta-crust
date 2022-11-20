@@ -1,0 +1,5 @@
+#!/bin/sh
+trap 'rm -f "$tmpf"' EXIT INT QUIT
+tmpf=$(mktemp)
+cat > "$tmpf"
+{ unzip -l "$tmpf"; unzip -p "$tmpf"; } | less
