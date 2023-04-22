@@ -200,7 +200,7 @@ poll_drive_temp() {
 #
 poll_core_temp() {
 	high_core_temp=0
-	for core_temp in `sensors | grep Core | awk '{print $3}' | cut -d '+' -f2 | cut -d '.' -f1`; do
+	for core_temp in $(sensors | awk '/Core/ {sub(/^.*\+/, "", $3); sub(/\..*/, "", $3); print $3}'); do
 		if [ $core_temp -gt $high_core_temp ]; then
 			high_core_temp=$core_temp
 		fi
@@ -281,7 +281,7 @@ level_compare() {
 		if [ $DEBUG -gt 0 ]; then
 			echo "Wait $TIMER_MULTIPLY more polls before reducing fan level."
 		fi
-		TIMER_MULTIPLY=`expr $TIMER_MULTIPLY - 1`
+		TIMER_MULTIPLY=$((TIMER_MULTIPLY - 1))
 	else
 		level_change
 		TIMER_MULTIPLY=$SLEEP_TIMER_MULTIPLY
