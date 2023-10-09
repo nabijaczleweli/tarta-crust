@@ -1,0 +1,11 @@
+path-exclude=/usr/bin/resolveip
+path-exclude=/usr/share/man/man1/resolveip.1*
+path-exclude=*myisam*
+path-exclude=/usr/bin/aria_*
+path-exclude=/usr/share/man/man1/aria_*.1*
+path-exclude=/usr/bin/resolve_stack_dump
+path-exclude=/usr/bin/replace
+path-exclude=/usr/bin/perror
+path-exclude=/usr/share/man/man1/resolve_stack_dump.1*
+path-exclude=/usr/share/man/man1/replace.1*
+path-exclude=/usr/share/man/man1/perror.1*
