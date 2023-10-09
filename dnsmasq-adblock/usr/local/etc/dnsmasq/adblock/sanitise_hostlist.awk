@@ -1,4 +1,4 @@
-/\st\.co$/ {
+/\st\.co$/ || /click\.discord\.com$/ || /licdn\.com/ {
 	next
 }
 
