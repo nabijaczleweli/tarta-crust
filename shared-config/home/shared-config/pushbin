@@ -1,3 +1,4 @@
 #!/bin/sh
 cd ~/bin
 for r in $(git remote); do ssh "$r" 'git -C bin pull' & :; done
+wait
