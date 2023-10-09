@@ -14,7 +14,7 @@ name="$2"
 bases_dir=$HOME/store/chroots/
 err() {
 	echo "$1" >&2
-	echo "Must be one of:" $(find "$bases_dir" -mindepth 1 -maxdepth 1 -type d | sed "s:$bases_dir::g") >&2
+	echo "Must be one of:" $(find "$bases_dir" -mindepth 1 -maxdepth 1 -type d | sed "s:$bases_dir::g" | sort) >&2
 	exit 1
 }
 
