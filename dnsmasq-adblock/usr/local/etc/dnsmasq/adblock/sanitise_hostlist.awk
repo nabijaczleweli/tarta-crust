@@ -1,4 +1,4 @@
-/\st\.co$/ || /click\.discord\.com$/ || /licdn\.com/ {
+/\st\.co$/ || /click\.discord\.com$/ || /licdn\.com/ || /jsonip\.com/ {
 	next
 }
 
