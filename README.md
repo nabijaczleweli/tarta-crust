@@ -109,3 +109,9 @@ Makes dpkg ignore `/usr/share/doc/linux-doc-*/html` and the symlink in `linux-do
 ## dpkg-no-mariadb-bullshit
 
 Removes the [ancient or plain weird, and huge](https://101010.pl/@nabijaczleweli/111207661687378407) binaries shipped by `mariadb-{client,server}{,-common}` when placed in `/etc/dpkg/dpkg.cfg.d`,
+
+## wkd
+
+Run `wkd mail@address.jpeg` in a webroot to generate (update) a GPG WKD config, which will be available to pull via `gpg --locate-key mail@address.jpeg`.
+
+This is how nabijaczleweli@nabijaczleweli.xyz is available, for example, yielding https://github.com/nabijaczleweli/nabijaczleweli.github.io/commit/4ec16f0dc19f6cc12323705703dd1ef7d9e76c13 (sans `.nojekyll`, that's a github pages config).

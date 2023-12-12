@@ -1,0 +1,24 @@
+#!/bin/sh
+# SPDX-License-Identifier: 0BSD
+
+[ $# -eq 0 ] && { echo "usage: $0 mail..." >&2; exit 1; }
+
+e=
+for mail; do
+	gpg --with-wkd-hash --fingerprint "$mail" | { grep -A1 "^uid.*<$mail>$" || echo "$0: $mail: no match" >&2; } | {
+		read -r _
+		IFS="$IFS@" read -r uid dom || {
+			echo "$0: $mail: no WKD ID" >&2
+			exit 1
+		}
+		[ "$dom" = "${mail#*@}" ] || {
+			echo "$0: $mail: != ${mail#*@}" >&2
+			exit 1
+		}
+
+		mkdir -vp .well-known/openpgpkey/hu &&
+			>> .well-known/openpgpkey/policy &&
+			{ { gpg --no-armor --export "$mail" > .well-known/openpgpkey/hu/"$uid" && echo "+ gpg --no-armor --export $mail > .well-known/openpgpkey/hu/$uid" >&2; } || rm -vf .well-known/openpgpkey/hu/"$uid"; }
+	} || e=1
+done
+exit $e
