@@ -115,3 +115,14 @@ Removes the [ancient or plain weird, and huge](https://101010.pl/@nabijaczleweli
 Run `wkd mail@address.jpeg` in a webroot to generate (update) a GPG WKD config, which will be available to pull via `gpg --locate-key mail@address.jpeg`.
 
 This is how nabijaczleweli@nabijaczleweli.xyz is available, for example, yielding https://github.com/nabijaczleweli/nabijaczleweli.github.io/commit/4ec16f0dc19f6cc12323705703dd1ef7d9e76c13 (sans `.nojekyll`, that's a github pages config).
+
+## generic-zless-and-tar-a
+
+bsdcat(1) from libarchive-tools is a [genericised zcat(1)](https://101010.pl/@nabijaczleweli/111573904592229697) that can operate on [all (most) types](https://bugs.debian.org/1058625) of compressed files.
+
+zless can't (and thus you get 50 different variants), and GNU tar's -a can't if you're reading from a pipe (and it'd be nontrivial to make it be able to).
+
+This contains /usr/local/bin/zless which will instead run files through bsdcat,<br >
+and /etc/profile.d/autotar.sh which adds a `tar` function which detects tar -ta/xa/-ad (&c., xtd operation with a comboed in the first argument) and runs tar with -I bsdcat to decompress in that case ‒ this makes curl | tar -xa work instead of complain.
+
+`alias zcat=bsdcat` also recommended.

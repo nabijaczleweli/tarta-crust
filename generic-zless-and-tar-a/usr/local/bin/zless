@@ -1,0 +1,7 @@
+#!/bin/sh
+# SPDX-License-Identifier: 0BSD
+
+LESSOPEN="||-bsdcat -- %s"
+export LESSOPEN
+
+exec less "$@"
