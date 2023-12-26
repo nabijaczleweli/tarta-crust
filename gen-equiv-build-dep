@@ -1,12 +1,9 @@
-#!/bin/bash
-
-set -e
-
+#!/bin/sh
 
 cd "${1:-.}"
-[[ -d "debian" ]] && cd debian
+[ -d "debian" ] && cd debian
 
-awk '
+exec awk '
 BEGIN {
 	bd = 0
 
